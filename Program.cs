@@ -7,9 +7,6 @@ namespace DZ_CS_2
         static void Main()
         {
             Ex1();
-            
-
-
         }
         static void FillAndPrint (int[] arrI, double[,] arrD)
         {
@@ -140,7 +137,7 @@ namespace DZ_CS_2
             // сумма элементов нечётных столбцов массива В
             SumOddAndEven(arrI, arrD, ref sumEven, ref sumOddCol);
             Console.WriteLine("Summ of all even elements in array A:\t" + sumEven);
-            Console.WriteLine("Summ of all elements in the all odd columns in array B:\t" + sumOddCol);
+            Console.WriteLine("Summ of all elements in the all odd columns in array B:\t" + Math.Round(sumOddCol, 3));
 
         }
     }
