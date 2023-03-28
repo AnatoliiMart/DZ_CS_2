@@ -1,6 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Channels;
+using System.Timers;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace DZ_CS_2
 {
@@ -8,8 +11,10 @@ namespace DZ_CS_2
     {
         static void Main()
         {
-            //Ex1();
-            Ex2();
+            // Ex1();
+            // Ex2();
+            // Ex3();
+            // Ex4();
             
         }
         static void FillAndPrint(int[] arrI, double[,] arrD)
@@ -201,6 +206,166 @@ namespace DZ_CS_2
             }
             Console.WriteLine($"Sum betweem max and min elements is:\t{sum}");
 
+        }
+        static void Ex3()
+        {
+            Console.WriteLine("Enter text what you want encrypt:");
+            string str = Console.ReadLine();
+            Console.WriteLine("Enter encryption key:");
+            int key = int.Parse(Console.ReadLine());
+            if (str == null)
+            {
+                Console.WriteLine("No text input!!!");
+            }
+            else // если в строку было что-то введено
+            {
+                // преобразовываем строку в чар массив
+                char[] strCh =  str.ToCharArray();
+                // осуществляем смещение на количество
+                // символов заданное введенным ключом (Шифруем) 
+                for (int i = 0; i < str.Length; i++)
+                {
+                    strCh[i] = (char)(strCh[i] + key);
+                }
+                Console.Write("Encrypted text:\t");
+                Console.WriteLine(strCh);
+                Console.WriteLine("Decryption...");
+                // обратной операцией расшифровываем строку
+                for (int i = 0; i < str.Length; i++)
+                {
+                    strCh[i] = (char)(strCh[i] - key);
+                }
+                Console.Write("Decrypted text:\t");
+                Console.WriteLine(strCh);
+            }
+            
+        }
+        static void Ex4()
+        {
+            
+            Console.WriteLine("Enter amount of rows in the first matrix:\t");
+            int fRowAmount = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Enter amount of columns in the first matrix:\t");
+            int fColAmount = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Enter amount of rows in the second matrix:\t");
+            int sRowAmount = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Enter amount of columns in the second matrix:\t");
+            int sColAmount = int.Parse(Console.ReadLine());
+
+            int[,] arr1 = new int[fRowAmount, fColAmount];
+            int[,] arr2 = new int[sRowAmount, sColAmount];
+
+            Console.WriteLine("Filling by random values first matrix:");
+            for (int i = 0; i < fRowAmount; i++)
+            {
+                for (int j = 0; j < fColAmount; j++)
+                {
+                    Random obj = new Random();
+                    arr1[i, j] = obj.Next(10);
+                    Console.Write(arr1[i, j] + "\t");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("Filling by random values second matrix:");
+            for (int i = 0; i < sRowAmount; i++)
+            {
+                for (int j = 0; j < sColAmount; j++)
+                {
+                    Random obj = new Random();
+                    arr2[i, j] = obj.Next(10);
+                    Console.Write(arr2[i, j] + "\t");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+            Console.Write("Choose operation:\n1. Addition of both matrices\n" +
+                          "2. Multiplication of both matrices\n3. Multiplying by number both matrices\n");
+            int operationChoose = int.Parse(Console.ReadLine());
+            switch (operationChoose)
+            {
+                case 1:
+                    if (fColAmount == sColAmount && fRowAmount == sRowAmount)
+                    {
+                        int[,] resArr = new int[fRowAmount, fColAmount];
+                        Console.WriteLine("Result matrix is:");
+                        for (int i = 0; i < fRowAmount; i++)
+                        {
+                            for (int j = 0; j < fColAmount; j++)
+                            {
+                                resArr[i, j] = arr1[i, j] + arr2[i, j];
+                                Console.Write(resArr[i, j] + "\t");
+                            }
+                            Console.WriteLine();
+                        }
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unable to perform addition operation on given matrices!");
+                        Console.WriteLine();
+                    }
+                    break;
+                case 2:
+                    
+                    if (fColAmount == sRowAmount)
+                    {
+                        int[,] resArr = new int[fRowAmount, sColAmount];
+                        for (int i = 0; i < fRowAmount; ++i)     // каждая строка A
+                            for (int j = 0; j < sColAmount; ++j) // каждый столбец B
+                                for (int k = 0; k < fColAmount; ++k)
+                                    resArr[i,j] += arr1[i,k] * arr2[k,j];
+
+                        Console.WriteLine("Result matrix is:");
+                        for (int i = 0; i < fRowAmount; i++)
+                        {
+                            for (int j = 0; j < sColAmount; j++)
+                            {
+                                Console.Write(resArr[i, j] + "\t");
+                            }
+                            Console.WriteLine();
+                        }
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unable to perform multiplication operation on given matrices!");
+                        Console.WriteLine();
+                    }
+
+                    break;
+                case 3:
+                    Console.Write("Enter the number by which you want to multiply matrices:\t");
+                    int key = int.Parse(Console.ReadLine());
+                    if (fColAmount == sColAmount && fRowAmount == sRowAmount)
+                    {
+                        for (int i = 0; i < fRowAmount; i++)
+                            for (int j = 0; j < fColAmount; j++)
+                            {
+                                arr1[i, j] *= key;
+                                arr2[i, j] *= key;
+                            }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < fRowAmount; i++)
+                            for (int j = 0; j < fColAmount; j++) arr1[i, j] *= key;
+
+                        for (int i = 0; i < sRowAmount; i++)
+                            for (int j = 0; j < sColAmount; j++) arr2[i, j] *= key;
+                    }
+                        break;
+                default:
+                    if (operationChoose > 3 || operationChoose < 1)
+                    {
+                        Console.WriteLine("Wrong Input!!!");
+                    }
+                    break;
+            }
         }
     }
 }
