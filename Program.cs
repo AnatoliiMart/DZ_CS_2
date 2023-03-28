@@ -1,4 +1,6 @@
-﻿using System.Threading.Channels;
+﻿using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Threading.Channels;
 
 namespace DZ_CS_2
 {
@@ -6,9 +8,11 @@ namespace DZ_CS_2
     {
         static void Main()
         {
-            Ex1();
+            //Ex1();
+            Ex2();
+            
         }
-        static void FillAndPrint (int[] arrI, double[,] arrD)
+        static void FillAndPrint(int[] arrI, double[,] arrD)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -40,38 +44,33 @@ namespace DZ_CS_2
             }
             Console.WriteLine();
         }
-        static double MaxElem    (int[] arrI, double[,]arrD)
+        static double MaxElem(int[] arrI, double[,] arrD)
         {
             //поиск максимального элемента сначала в одномерном массиве
             double maxElem = 0;
             for (int i = 0; i < 4; i++)
             {
-                int tmp = arrI[i];
-                if (maxElem <= tmp || maxElem <= arrI[i + 1])
+                if (maxElem <= arrI[i] || maxElem <= arrI[i + 1])
                     maxElem = Math.Max(arrI[i], arrI[i + 1]);
-
             }
             // а затем и в двумерном
             for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    double tmp = arrD[i, j];
-                    if (maxElem <= tmp || maxElem <= arrD[i + 1, j + 1])
+                    if (maxElem <= arrD[i, j] || maxElem <= arrD[i + 1, j + 1])
                         maxElem = Math.Max(arrD[i, j], arrD[i + 1, j + 1]);
                 }
             }
             return maxElem;
         }
-        static double MinElem    (int[] arrI, double[,] arrD)
+        static double MinElem(int[] arrI, double[,] arrD)
         {
             //поиск минимального элемента сначала в одномерном массиве
             double minElem = 0;
             for (int i = 0; i < 4; i++)
             {
-                int tmp = arrI[i];
-
-                if (minElem >= tmp || minElem >= arrI[i + 1]) 
+                if (minElem >= arrI[i] || minElem >= arrI[i + 1])
                     minElem = Math.Min(arrI[i], arrI[i + 1]);
             }
             // а затем и в двумерном
@@ -79,9 +78,7 @@ namespace DZ_CS_2
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    double tmp = arrD[i, j];
-
-                    if (minElem >= tmp || minElem >= arrD[i + 1, j + 1])
+                    if (minElem >= arrD[i, j] || minElem >= arrD[i + 1, j + 1])
                         minElem = Math.Min(arrD[i, j], arrD[i + 1, j + 1]);
                 }
             }
@@ -138,6 +135,71 @@ namespace DZ_CS_2
             SumOddAndEven(arrI, arrD, ref sumEven, ref sumOddCol);
             Console.WriteLine("Summ of all even elements in array A:\t" + sumEven);
             Console.WriteLine("Summ of all elements in the all odd columns in array B:\t" + Math.Round(sumOddCol, 3));
+
+        }
+        static void Ex2()
+        {
+            int[,] arr = new int[5, 5];
+
+            int maxElem = 0;
+            int minElem = 0;
+            int sum     = 0;
+                        
+            int iMax    = 0;
+            int iMin    = 0;
+                        
+            int jMax    = 0;
+            int jMin    = 0;
+
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    Random obj = new Random();
+                    arr[i, j] = obj.Next(-100, 100);
+                    Console.Write(arr[i, j] + "\t");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (maxElem <= arr[i, j] || maxElem <= arr[i + 1, j + 1])
+                    {
+                        maxElem = Math.Max(arr[i, j], arr[i + 1, j + 1]);
+                        iMax = i;
+                        jMax = j;
+                    }
+                    if (minElem >= arr[i, j] || minElem >= arr[i + 1, j + 1])
+                    {
+                        minElem = Math.Min(arr[i, j], arr[i + 1, j + 1]);
+                        iMin = i;
+                        jMin = j;
+                    }
+                }
+            }
+
+            Console.WriteLine($"Max eleemnt:\t{maxElem}");
+            Console.WriteLine($"Min element:\t{minElem}");
+            Console.WriteLine();
+
+            int iBeg = (iMin <= iMax) ? iMin : iMax;
+            int jBeg = (jMin <= jMax) ? jMin : jMax;
+
+            int iEnd = (iBeg == iMin) ? iMax : iMin;
+            int jEnd = (jBeg == jMin) ? jMax : jMin;
+
+            for (int i = iBeg; i <= iEnd; i++)
+            {
+                for (int j = jBeg; j <= jEnd; j++)
+                {
+                    sum += arr[i, j];
+                }
+            }
+            Console.WriteLine($"Sum betweem max and min elements is:\t{sum}");
 
         }
     }
